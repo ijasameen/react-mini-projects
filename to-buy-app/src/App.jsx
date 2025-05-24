@@ -1,7 +1,11 @@
+import "./App.css";
+import SidePanel from "./components/SidePanel";
+
 export default function App() {
   return (
     <>
-      <h1>To Buy App</h1>
+      <SidePanel />
+      <main></main>
     </>
   );
 }

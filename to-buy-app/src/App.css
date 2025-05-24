@@ -1,0 +1,86 @@
+.side-panel {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  right: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  z-index: 10;
+  transition: right 300ms ease-out;
+}
+
+.side-panel.expanded {
+  right: 0;
+}
+
+.side-panel-expand-btn {
+  position: fixed;
+  top: 2rem;
+  right: calc(100% - 42px);
+  transform-origin: 0% 50%;
+  width: 42px;
+  aspect-ratio: 1/1;
+  padding: 0.6em;
+  border: none;
+  color: var(--cl-primary-900);
+  background-color: var(--cl-primary-400);
+  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+  cursor: pointer;
+  user-select: none;
+  z-index: 20;
+  transition: right 300ms ease-out;
+}
+
+.side-panel.expanded .side-panel-expand-btn {
+  right: 0;
+  color: var(--cl-primary-200);
+  background-color: var(--cl-primary-800);
+  border-radius: var(--radius-m) 0 0 var(--radius-m);
+}
+
+.side-panel-expand-btn:active {
+  background-color: var(--cl-primary-300);
+  scale: 0.98;
+}
+
+@media (min-width: 800px) {
+  .side-panel {
+    position: static;
+    width: min(35%, 500px);
+    min-width: 320px;
+  }
+  .side-panel-expand-btn {
+    display: none;
+  }
+}
+
+.side-panel header {
+  display: grid;
+  background-color: var(--cl-primary-400);
+  padding: 1rem 0.5rem;
+  gap: 3rem;
+}
+
+.side-panel .logo {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: var(--fs-body-l);
+  font-weight: bold;
+  color: var(--cl-primary-900);
+}
+
+.side-panel .logo img {
+  height: 2em;
+}
+
+.side-panel button {
+  justify-self: right;
+}
+
+.buy-lists-container {
+  padding: 1rem 0.5rem;
+
+  background-color: var(--cl-secondary-500);
+}
