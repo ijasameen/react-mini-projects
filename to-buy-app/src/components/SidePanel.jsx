@@ -22,11 +22,15 @@ export default function SidePanel() {
       </header>
       <div className="buy-lists-container">
         <ul className="card-list">
-          <li className="card-list-item">
+          <li className="card-list-item selected">
             <span className="card-text">Grocery List</span>
             <span className="tag">3 / 5</span>
             <span className="tag">2025-06-25</span>
-            <button className="icon-btn" type="button">
+            <button
+              className="icon-btn"
+              data-color-var="inversed"
+              type="button"
+            >
               X
             </button>
           </li>
@@ -35,12 +39,13 @@ export default function SidePanel() {
         </ul>
       </div>
       <button
-        className="side-panel-expand-btn"
+        className={`side-panel-expand-btn icon-bg ${
+          expanded ? "icon-arrow-left" : "icon-arrow-right"
+        }`}
+        data-color-var={expanded ? "inversed" : ""}
         type="button"
         onClick={toggleSidebar}
-      >
-        {expanded ? "<-" : "->"}
-      </button>
+      ></button>
     </aside>
   );
 }
