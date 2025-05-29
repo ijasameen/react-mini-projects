@@ -157,7 +157,7 @@ h1 {
   border-radius: var(--radius-m);
   cursor: pointer;
   user-select: none;
-  transition: scale 140ms ease-out, background-color 140ms ease-out;
+  transition: scale 140ms ease-out, background-color 200ms ease-out;
 }
 
 .icon-btn:hover {
@@ -222,6 +222,10 @@ h1 {
   background-image: url("./assets/pencil-inversed.svg");
 }
 
+.icon-tick {
+  background-image: url("./assets/tick-inversed.svg");
+}
+
 .icon-arrow-down {
   background-image: url("./assets/arrow-down-inversed.svg");
 }
@@ -247,6 +251,16 @@ h1 {
 .icon-arrow-left[data-color-var="inversed"],
 .icon-arrow-left[data-color-var="accent"] {
   background-image: url("./assets/arrow-left-primary.svg");
+}
+
+.icon-tick[data-color-var="inversed"],
+.icon-tick[data-color-var="accent"] {
+  background-image: url("./assets/tick-primary.svg");
+}
+
+.icon-pencil[data-color-var="inversed"],
+.icon-tick[data-color-var="accent"] {
+  background-image: url("./assets/pencil-primary.svg");
 }
 
 .input-text-n {
@@ -290,7 +304,26 @@ h1 {
   margin-right: 0.4em;
 }
 
+.card-list-item[data-completed="true"] {
+  color: var(--cl-primary-800);
+  background-color: var(--cl-primary-600);
+}
+
+.card-list-item[data-completed="true"]:hover {
+  box-shadow: 0px 5px 3px var(--cl-primary-500);
+  translate: 0px -3px;
+}
+
 .card-text {
+  user-select: none;
+  flex-grow: 2;
+}
+
+.card-list-item[data-completed="true"] .card-text {
+  text-decoration: line-through;
+}
+
+.card-input {
   flex-grow: 2;
 }
 
