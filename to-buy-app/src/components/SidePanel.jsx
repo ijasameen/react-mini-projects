@@ -41,6 +41,9 @@ export default function SidePanel({
               ? "card-list-item selected"
               : "card-list-item"
           }
+          data-completed={
+            buyList.totalItemsCount === buyList.completedItemsCount
+          }
         >
           <BuyListsItem
             buyList={buyList}
