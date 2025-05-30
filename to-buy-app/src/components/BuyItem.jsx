@@ -1,38 +1,37 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 export default function BuyItem({
-  index,
   item,
   toggleItemCompletion,
   deleteItem,
   editItem,
+  isEditing,
+  setEditingItemId,
+  editingText,
+  setEditingText,
 }) {
-  const { text } = item;
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingText, setEditingText] = useState("");
+  const { id, text, isCompleted } = item;
   const editInputRef = useRef(null);
 
   useEffect(() => {
     if (isEditing) {
-      setEditingText(text);
       editInputRef.current.focus();
     }
-  }, [isEditing, text]);
+  }, [isEditing, editingText]);
 
   if (isEditing) {
     return (
       <>
         <input
           ref={editInputRef}
-          className="card-input"
+          className="input-text-n card-input"
           type="text"
           name="text"
           value={editingText}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              setIsEditing(false);
-              editItem(index, editingText);
+              setEditingItemId(null);
+              editItem(id, editingText);
             }
           }}
           onChange={(ev) => setEditingText(ev.target.value)}
@@ -41,19 +40,17 @@ export default function BuyItem({
           className="icon-btn icon-bg icon-tick"
           type="button"
           onClick={() => {
-            editItem(index, editingText);
-            setIsEditing(false);
+            editItem(id, editingText);
+            setEditingItemId(null);
           }}
         ></button>
         <button
-          className="icon-btn"
+          className="icon-btn icon-bg icon-arrow-right "
           type="button"
           onClick={() => {
-            setIsEditing(false);
+            setEditingItemId(null);
           }}
-        >
-          X
-        </button>
+        ></button>
       </>
     );
   } else {
@@ -62,7 +59,7 @@ export default function BuyItem({
         <span
           className="card-text"
           onClick={() => {
-            toggleItemCompletion(index);
+            toggleItemCompletion(id);
           }}
         >
           {text}
@@ -75,13 +72,13 @@ export default function BuyItem({
           className="icon-btn icon-bg icon-pencil"
           type="button"
           onClick={() => {
-            setIsEditing(true);
+            setEditingItemId(id);
           }}
         ></button>
         <button
           className="icon-btn"
           type="button"
-          onClick={() => deleteItem(index)}
+          onClick={() => deleteItem(id)}
         >
           X
         </button>

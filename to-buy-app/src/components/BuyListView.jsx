@@ -1,34 +1,53 @@
-import { useState } from "react";
-import BuyListItem from "./BuyItem";
+import { useEffect, useState } from "react";
+import BuyItem from "./BuyItem";
+import { v4 as uuidv4 } from "uuid";
 
 export default function BuyListView({
   buyList,
   setBuyList,
-  buyListItems = [],
+  buyItemsMap = new Map(),
+  setBuyItemsMap,
+  updateBuyItemsLocalStorage,
 }) {
   const [inputText, setInputText] = useState("");
+  const [editingItemId, setEditingItemId] = useState(null);
+  const [editingText, setEditingText] = useState("");
 
-  if (!buyList) return;
+  useEffect(() => {
+    if (!buyItemsMap) return;
+    const item = buyItemsMap.get(editingItemId);
+    if (item) {
+      setEditingText(item.text);
+    }
+  }, [editingItemId, buyItemsMap]);
+
+  if (!buyList || !buyItemsMap) return <div></div>;
 
   const { title, createdDate } = buyList;
-  const buyItems = buyListItems.reverse().map((item, index) => {
-    return (
-      <li
-        key={index}
-        data-index={index}
-        data-completed={item.isCompleted}
-        className="card-list-item"
-      >
-        <BuyListItem
-          index={index}
-          item={item}
-          editItem={editItem}
-          deleteItem={deleteItem}
-          toggleItemCompletion={toggleItemCompletion}
-        />
-      </li>
-    );
-  });
+
+  const buyItems = Array.from(buyItemsMap.values())
+    .reverse()
+    .map((item) => {
+      return (
+        <li
+          key={item.id}
+          data-id={item.id}
+          data-completed={item.isCompleted}
+          className="card-list-item"
+        >
+          <BuyItem
+            item={item}
+            toggleItemCompletion={toggleItemCompletion}
+            deleteItem={deleteItem}
+            editItem={editItem}
+            isEditing={editingItemId && editingItemId === item.id}
+            setEditingItemId={setEditingItemId}
+            editingText={editingText}
+            setEditingText={setEditingText}
+          />
+        </li>
+      );
+    });
 
   return (
     <article className="buy-list-view">
@@ -38,8 +57,12 @@ export default function BuyListView({
           <div>
             <span className="tag">{createdDate}</span>{" "}
             <span className="tag">
-              {buyListItems.filter((item) => item.isCompleted).length} /{" "}
-              {buyListItems.length}
+              {
+                Array.from(buyItemsMap.values()).filter(
+                  (item) => item.isCompleted
+                ).length
+              }{" "}
+              / {buyItemsMap.length}
             </span>
           </div>
           <button className="icon-btn" data-color-var="inversed" type="button">
@@ -78,64 +101,58 @@ export default function BuyListView({
     </article>
   );
 
-  function toggleItemCompletion(index) {
-    const item = buyList.items[index];
+  function toggleItemCompletion(id) {
+    const item = buyItemsMap.get(id);
     if (!item) return false;
 
-    const isCompleted = buyList.items[index].isCompleted;
+    const isCompleted = item.isCompleted;
 
-    setBuyList((prev) => {
-      const updatedItems = [...prev.items];
-      updatedItems[index].isCompleted = !isCompleted;
-      return {
-        ...prev,
-        items: updatedItems,
-      };
+    setBuyItemsMap((prev) => {
+      const newItems = new Map(prev);
+      newItems.get(id).isCompleted = !isCompleted;
+      updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      return newItems;
     });
-    console.log(buyList.items[index].isCompleted);
   }
 
   function addItem(text) {
     // TODO: better validation
     if (!text) return;
 
-    setBuyList((prev) => {
-      return {
-        // Copy all existing properties of prev
-        ...prev,
-        // Replace the items array with a new array including the new item
-        items: [...prev.items, { text, isCompleted: false }],
-      };
+    const id = uuidv4();
+
+    setBuyItemsMap((prev) => {
+      const newItems = new Map(prev);
+      newItems.set(id, { id, text, isCompleted: false });
+      updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      return newItems;
     });
   }
 
-  function editItem(index, text) {
+  function editItem(id, text) {
     // TODO: better validation
-    console.log("editItem called", index, text);
-
     if (!text) return;
 
-    const item = buyList.items[index];
+    const item = buyItemsMap.get(id);
     if (!item) return false;
 
-    console.log(index, item);
-
-    setBuyList((prev) => {
-      const updatedItems = [...prev.items];
-      updatedItems[index].text = text;
-      return {
-        ...prev,
-        items: updatedItems,
-      };
+    setBuyItemsMap((prev) => {
+      const newItems = new Map(prev);
+      newItems.get(id).text = text;
+      updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      return newItems;
     });
   }
 
-  function deleteItem(index) {
-    setBuyList((prev) => {
-      return {
-        ...prev,
-        items: prev.items.filter((item, i) => i != index),
-      };
+  function deleteItem(id) {
+    const item = buyItemsMap.get(id);
+    if (!item) return false;
+
+    setBuyItemsMap((prev) => {
+      const newItems = new Map(prev);
+      newItems.delete(id);
+      updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      return newItems;
     });
   }
 }

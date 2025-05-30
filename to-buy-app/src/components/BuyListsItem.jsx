@@ -51,7 +51,7 @@ export default function BuyListsItem({
           }}
         ></button>
         <button
-          className="icon-btn"
+          className="icon-btn icon-bg icon-arrow-right"
           type="button"
           data-color-var={isSelected ? "inversed" : ""}
           onClick={() => {
@@ -59,9 +59,7 @@ export default function BuyListsItem({
             title || renameBuyList(buyList.id, "New Buy List");
             changeEditingBuyListId(null);
           }}
-        >
-          X
-        </button>
+        ></button>
       </>
     );
   } else {

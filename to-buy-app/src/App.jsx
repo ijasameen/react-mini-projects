@@ -8,7 +8,7 @@ import SidePanel from "./components/SidePanel";
 export default function App() {
   const [buyListsMap, setBuyListsMap] = useState(new Map());
   const [selectedBuyList, setSelectedBuyList] = useState(null);
-  const [selectedBuyListItems, setSelectedBuyListItems] = useState(null);
+  const [selectedBuyItemsMap, setSelectedBuyItemsMap] = useState(null);
 
   useEffect(() => {
     // Load the the buy lists from local storage
@@ -23,18 +23,28 @@ export default function App() {
     setBuyListsMap(buyListsMap);
   }, []);
 
-  function updateBuyListsLocalStorage(buyLists) {
-    const buyListsString = JSON.stringify(buyLists);
-    localStorage.setItem("buy-lists", buyListsString);
-  }
-
-  // useEffect(() => {
-  //   if (selectedBuyList || buyListsMap.length === 0) return;
-  //   setSelectedBuyList(buyListsMap.values().next().value);
-  // }, [buyListsMap, selectedBuyList]);
-
   useEffect(() => {
-    setSelectedBuyListItems([]);
+    if (!selectedBuyList) {
+      setSelectedBuyItemsMap(new Map());
+      return;
+    }
+
+    // Load the the buy lists from local storage
+    const buyListItemsString = localStorage.getItem(
+      `buy-list-items_${selectedBuyList.id}`
+    );
+
+    if (!buyListItemsString) {
+      setSelectedBuyItemsMap(new Map());
+      return;
+    }
+
+    const buyListItems = JSON.parse(buyListItemsString);
+    const buyListItemsMap = new Map(
+      buyListItems.map((buyList) => [buyList.id, buyList])
+    );
+
+    setSelectedBuyItemsMap(buyListItemsMap);
   }, [selectedBuyList]);
 
   function addBuyList(title) {
@@ -110,8 +120,21 @@ export default function App() {
         <BuyListView
           buyList={selectedBuyList}
           setBuyList={setSelectedBuyList}
+          buyItemsMap={selectedBuyItemsMap}
+          setBuyItemsMap={setSelectedBuyItemsMap}
+          updateBuyItemsLocalStorage={updateBuyListItemsLocalStorage}
         />
       </main>
     </>
   );
+
+  function updateBuyListsLocalStorage(buyLists) {
+    const buyListsString = JSON.stringify(buyLists);
+    localStorage.setItem("buy-lists", buyListsString);
+  }
+
+  function updateBuyListItemsLocalStorage(buyListId, buyListItems) {
+    const buyListsString = JSON.stringify(buyListItems);
+    localStorage.setItem(`buy-list-items_${buyListId}`, buyListsString);
+  }
 }
