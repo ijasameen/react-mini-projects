@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import BuyItem from "./BuyItem";
 import { v4 as uuidv4 } from "uuid";
+import BuyListsItem from "./BuyListsItem";
 
 export default function BuyListView({
   buyList,
-  setBuyList,
+  deleteBuyList,
   buyItemsMap = new Map(),
   setBuyItemsMap,
   updateBuyItemsLocalStorage,
+  updateBuyItemsStats,
 }) {
   const [inputText, setInputText] = useState("");
   const [editingItemId, setEditingItemId] = useState(null);
@@ -57,15 +59,17 @@ export default function BuyListView({
           <div>
             <span className="tag">{createdDate}</span>{" "}
             <span className="tag">
-              {
-                Array.from(buyItemsMap.values()).filter(
-                  (item) => item.isCompleted
-                ).length
-              }{" "}
-              / {buyItemsMap.length}
+              {buyList.completedItemsCount} / {buyList.totalItemsCount}
             </span>
           </div>
-          <button className="icon-btn" data-color-var="inversed" type="button">
+          <button
+            className="icon-btn"
+            data-color-var="inversed"
+            type="button"
+            onClick={() => {
+              deleteBuyList(buyList.id);
+            }}
+          >
             X
           </button>
         </div>
@@ -111,6 +115,10 @@ export default function BuyListView({
       const newItems = new Map(prev);
       newItems.get(id).isCompleted = !isCompleted;
       updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      updateBuyItemsStats(
+        buyList.id,
+        Array.from(newItems.values()).filter((item) => item.isCompleted).length
+      );
       return newItems;
     });
   }
@@ -125,6 +133,7 @@ export default function BuyListView({
       const newItems = new Map(prev);
       newItems.set(id, { id, text, isCompleted: false });
       updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      updateBuyItemsStats(buyList.id, null, newItems.size);
       return newItems;
     });
   }
@@ -152,6 +161,11 @@ export default function BuyListView({
       const newItems = new Map(prev);
       newItems.delete(id);
       updateBuyItemsLocalStorage(buyList.id, Array.from(newItems.values()));
+      updateBuyItemsStats(
+        buyList.id,
+        Array.from(newItems.values()).filter((item) => item.isCompleted).length,
+        newItems.size
+      );
       return newItems;
     });
   }

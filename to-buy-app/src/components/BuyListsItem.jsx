@@ -72,7 +72,7 @@ export default function BuyListsItem({
           {buyList.title}
         </span>
         <span className="tag">
-          {buyList.completedItems} / {buyList.totalItems}
+          {buyList.completedItemsCount} / {buyList.totalItemsCount}
         </span>
         <span className="tag">{buyList.createdDate}</span>
         <button

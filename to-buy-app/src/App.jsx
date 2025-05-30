@@ -53,8 +53,8 @@ export default function App() {
       id,
       title: title,
       createdDate: new Date().toDateString(),
-      totalItems: 0,
-      completedItems: 0,
+      totalItemsCount: 0,
+      completedItemsCount: 0,
     };
 
     setBuyListsMap((prev) => {
@@ -73,6 +73,10 @@ export default function App() {
   function deleteBuyList(id) {
     const buyList = buyListsMap.get(id);
     if (!buyList) return false;
+
+    if (selectedBuyList && selectedBuyList.id === id) {
+      setSelectedBuyList(null);
+    }
 
     setBuyListsMap((prev) => {
       const newBuyListsMap = new Map(prev);
@@ -93,6 +97,25 @@ export default function App() {
     setBuyListsMap((prev) => {
       const newBuyListsMap = new Map(prev);
       newBuyListsMap.get(id).title = title;
+      updateBuyListsLocalStorage(Array.from(newBuyListsMap.values()));
+      return newBuyListsMap;
+    });
+  }
+
+  function updateBuyListItemsStats(id, completedCount, totalCount) {
+    if (completedCount == null && totalCount == null) return false;
+
+    const buyList = buyListsMap.get(id);
+    if (!buyList) return false;
+
+    setBuyListsMap((prev) => {
+      const newBuyListsMap = new Map(prev);
+      if (completedCount != null) {
+        newBuyListsMap.get(id).completedItemsCount = completedCount;
+      }
+      if (totalCount != null) {
+        newBuyListsMap.get(id).totalItemsCount = totalCount;
+      }
       updateBuyListsLocalStorage(Array.from(newBuyListsMap.values()));
       return newBuyListsMap;
     });
@@ -119,10 +142,12 @@ export default function App() {
       <main>
         <BuyListView
           buyList={selectedBuyList}
+          deleteBuyList={deleteBuyList}
           setBuyList={setSelectedBuyList}
           buyItemsMap={selectedBuyItemsMap}
           setBuyItemsMap={setSelectedBuyItemsMap}
           updateBuyItemsLocalStorage={updateBuyListItemsLocalStorage}
+          updateBuyItemsStats={updateBuyListItemsStats}
         />
       </main>
     </>
