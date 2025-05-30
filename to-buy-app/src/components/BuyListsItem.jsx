@@ -65,16 +65,16 @@ export default function BuyListsItem({
   } else {
     return (
       <>
-        <span
-          className="card-text"
+        <div
+          className="card-content"
           onClick={() => selectBuyList(buyList.id) && setExpanded(false)}
         >
-          {buyList.title}
-        </span>
-        <span className="tag">
-          {buyList.completedItemsCount} / {buyList.totalItemsCount}
-        </span>
-        <span className="tag">{buyList.createdDate}</span>
+          <span className="card-text">{buyList.title}</span>
+          <span className="tag">
+            {buyList.completedItemsCount} / {buyList.totalItemsCount}
+          </span>
+          <span className="tag">{buyList.createdDate}</span>
+        </div>
         <button
           className="icon-btn icon-bg icon-pencil"
           type="button"

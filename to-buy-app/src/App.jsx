@@ -82,6 +82,7 @@ export default function App() {
       const newBuyListsMap = new Map(prev);
       newBuyListsMap.delete(id);
       updateBuyListsLocalStorage(Array.from(newBuyListsMap.values()));
+      deleteBuyListItemsForBuyList(id);
       return newBuyListsMap;
     });
 
@@ -161,5 +162,10 @@ export default function App() {
   function updateBuyListItemsLocalStorage(buyListId, buyListItems) {
     const buyListsString = JSON.stringify(buyListItems);
     localStorage.setItem(`buy-list-items_${buyListId}`, buyListsString);
+  }
+
+  function deleteBuyListItemsForBuyList(buyListId) {
+    const key = `buy-list-items_${buyListId}`;
+    localStorage.removeItem(key);
   }
 }

@@ -12,7 +12,7 @@ main {
 }
 
 .buy-list-view {
-  min-width: min(500px, calc(100% - 2rem));
+  min-width: min(600px, calc(100% - 2rem));
   height: fit-content;
   border-radius: var(--radius-m);
   color: var(--cl-primary-800);
@@ -110,8 +110,12 @@ main {
 @media (min-width: 800px) {
   .side-panel {
     position: static;
-    width: min(35%, 500px);
+    width: min(35%, 600px);
     min-width: 320px;
+  }
+
+  main {
+    width: 65%;
   }
 
   .side-panel-expand-btn {

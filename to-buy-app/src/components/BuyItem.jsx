@@ -10,7 +10,7 @@ export default function BuyItem({
   editingText,
   setEditingText,
 }) {
-  const { id, text, isCompleted } = item;
+  const { id, text } = item;
   const editInputRef = useRef(null);
 
   useEffect(() => {
@@ -56,18 +56,16 @@ export default function BuyItem({
   } else {
     return (
       <>
-        <span
-          className="card-text"
-          onClick={() => {
-            toggleItemCompletion(id);
-          }}
-        >
-          {text}
-        </span>
-        {
-          // <span className="tag">x 1l</span>
-          // <span className="tag">@ Milkshop</span>
-        }
+        <div className="card-content">
+          <span
+            className="card-text"
+            onClick={() => {
+              toggleItemCompletion(id);
+            }}
+          >
+            {text}
+          </span>
+        </div>
         <button
           className="icon-btn icon-bg icon-pencil"
           type="button"
